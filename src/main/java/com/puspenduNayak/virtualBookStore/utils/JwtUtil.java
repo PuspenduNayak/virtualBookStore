@@ -9,10 +9,13 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class JwtUtil {
     private String SECRET_KEY = "TaK+HaV^uvCHEFsEVfypW#7g9^k*Z8$V";
+    private Set<String> tokenBlacklist = ConcurrentHashMap.newKeySet(); // thread-safe
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
@@ -56,7 +59,16 @@ public class JwtUtil {
                 .compact();
     }
 
+    public void blacklistToken(String token) {
+        tokenBlacklist.add(token);
+    }
+
+    public boolean isTokenBlacklisted(String token) {
+        return tokenBlacklist.contains(token);
+    }
+
+
     public Boolean validateToken(String token) {
-        return !isTokenExpired(token);
+        return !isTokenExpired(token) && !isTokenBlacklisted(token);
     }
 }

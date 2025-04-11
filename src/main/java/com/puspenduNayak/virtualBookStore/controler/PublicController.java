@@ -1,17 +1,16 @@
 package com.puspenduNayak.virtualBookStore.controler;
 
 import com.puspenduNayak.virtualBookStore.entity.User;
-import com.puspenduNayak.virtualBookStore.service.EmailService;
 import com.puspenduNayak.virtualBookStore.service.UserDetailsServiceImpl;
 import com.puspenduNayak.virtualBookStore.service.UserService;
 import com.puspenduNayak.virtualBookStore.utils.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,5 +61,16 @@ public class PublicController {
             log.error("Exception accured while createAuthenticationToken ", e);
             return new ResponseEntity<>("Incorrect username and password", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            jwtUtil.blacklistToken(token);
+            return new ResponseEntity<>("Logged out successfully", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("No token found", HttpStatus.BAD_REQUEST);
     }
 }
