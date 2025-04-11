@@ -9,11 +9,10 @@ import java.time.LocalDateTime;
 
 @Document(collection = "books")
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Book {
 
         @Id
