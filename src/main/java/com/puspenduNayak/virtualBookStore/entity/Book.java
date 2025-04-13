@@ -23,4 +23,5 @@ public class Book {
         private String genre;
         private double price;
         private LocalDateTime date;
+        private String pdfUrl;
 }

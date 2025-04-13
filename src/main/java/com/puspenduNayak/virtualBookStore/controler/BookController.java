@@ -3,16 +3,20 @@ package com.puspenduNayak.virtualBookStore.controler;
 import com.puspenduNayak.virtualBookStore.entity.Book;
 import com.puspenduNayak.virtualBookStore.entity.User;
 import com.puspenduNayak.virtualBookStore.service.BookService;
+import com.puspenduNayak.virtualBookStore.service.FileUploadService;
 import com.puspenduNayak.virtualBookStore.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +29,9 @@ public class BookController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private FileUploadService fileUploadService;
 
     @GetMapping("id/{myId}")
     public ResponseEntity<?> getBooksById(@PathVariable ObjectId myId) {
@@ -86,7 +93,7 @@ public class BookController {
         return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping
+    /*@PostMapping
     public ResponseEntity<Book> addBook(@RequestBody Book book) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
@@ -98,7 +105,39 @@ public class BookController {
             log.error("Exception occur when add book: ", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }*/
+
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Book> uploadBook(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("title") String title,
+            @RequestParam("author") String author,
+            @RequestParam("genre") String genre,
+            @RequestParam("price") double price
+    ) {
+        try {
+            String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+            String pdfUrl = fileUploadService.uploadFile(file);
+
+            Book book = new Book();
+            book.setTitle(title);
+            book.setAuthor(author);
+            book.setGenre(genre);
+            book.setPrice(price);
+            book.setDate(LocalDateTime.now());
+            book.setPdfUrl(pdfUrl);
+
+            if (bookService.saveBook(book, userName)) {
+                return new ResponseEntity<>(book, HttpStatus.CREATED);
+            }
+
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            log.error("Error uploading book PDF", e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
+
 
     @PutMapping("id/{myId}")
     public ResponseEntity<?> updateBookById(@PathVariable ObjectId myId, @RequestBody Book newBook) {
