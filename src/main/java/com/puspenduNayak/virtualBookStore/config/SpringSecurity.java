@@ -16,6 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -31,7 +33,7 @@ public class SpringSecurity {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(request -> request
                         .requestMatchers("/public/**").permitAll()
-                        .requestMatchers("/books", "/user/**").authenticated()
+                        .requestMatchers("/books", "/user/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll())
                 .csrf(AbstractHttpConfigurer::disable)
@@ -42,6 +44,24 @@ public class SpringSecurity {
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
+
+    @Configuration
+    public class CorsConfig {
+        @Bean
+        public WebMvcConfigurer corsConfigurer() {
+            return new WebMvcConfigurer() {
+                @Override
+                public void addCorsMappings(CorsRegistry registry) {
+                    registry.addMapping("/**")
+                            .allowedOrigins("http://localhost:5173") // React dev server
+                            .allowedMethods("*")
+                            .allowedHeaders("*")
+                            .allowCredentials(true);
+                }
+            };
+        }
+    }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
