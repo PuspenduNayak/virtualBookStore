@@ -22,6 +22,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/books")
+@CrossOrigin("*")
 @Slf4j
 public class BookController {
     @Autowired
