@@ -46,7 +46,7 @@ public class AdminController {
     @DeleteMapping("delete-user-by-admin")
     public ResponseEntity<?> deleteUserByAdmin(@RequestBody User user) {
         User delUser = userService.findByUserName(user.getUserName());
-        if (!delUser.getRoles().stream().anyMatch(role -> role.equals("ADMIN"))) {
+        if (delUser != null && delUser.getRoles() != null && !delUser.getRoles().stream().anyMatch(role -> role.equals("ADMIN"))) {
             boolean flag = userService.deleteUser(delUser.getUserName());
             if (flag)
                 return new ResponseEntity<>("SUCCESSFUL", HttpStatus.NO_CONTENT);

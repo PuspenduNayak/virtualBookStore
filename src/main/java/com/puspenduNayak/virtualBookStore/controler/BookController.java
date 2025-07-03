@@ -146,7 +146,8 @@ public class BookController {
         String userName = authentication.getName();
         User user = userService.findByUserName(userName);
         List<Book> collect = user.getBooksEntries().stream().filter(x -> x.getId().equals(myId)).toList();
-        if (!collect.isEmpty() && user.getRoles().stream().anyMatch(x->x.equals("ADMIN"))) {
+        if (!collect.isEmpty() && user.getRoles() != null &&
+                user.getRoles().stream().anyMatch(x->x.equals("ADMIN"))) {
             Optional<Book> book = bookService.findById(myId);
             Book old = book.get();
             old.setAuthor(newBook.getAuthor() != null && !newBook.getAuthor().equals("") ? newBook.getAuthor() : old.getAuthor());

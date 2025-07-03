@@ -1,15 +1,16 @@
 package com.puspenduNayak.virtualBookStore.controler;
 
 import com.puspenduNayak.virtualBookStore.entity.User;
-import com.puspenduNayak.virtualBookStore.service.BookService;
 import com.puspenduNayak.virtualBookStore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/user")
@@ -19,6 +20,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @GetMapping
     public ResponseEntity<?> getUser() {
@@ -39,7 +41,9 @@ public class UserController {
         String userName = authentication.getName();
         User old = userService.findByUserName(userName);
         old.setUserName(user.getUserName() != null && !user.getUserName().equals("") ?user.getUserName():old.getUserName());
-        old.setPassword(user.getPassword() != null && !user.getPassword().equals("") ?user.getPassword():old.getPassword());
+        if (user.getPassword() != null && !user.getPassword().equals("")) {
+            old.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         old.setEmail(user.getEmail() != null && !user.getEmail().equals("") ?user.getEmail():old.getEmail());
         boolean flag = userService.saveUser(old);
         if (flag)

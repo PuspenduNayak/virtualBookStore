@@ -89,10 +89,7 @@ public class UserService {
 
     public boolean isPresent(String userName) {
         User user = userRepository.findByUserName(userName);
-        if (user.getUserName().equals(userName))
-            return true;
-
-        return false;
+        return user != null && user.getUserName().equals(userName);
     }
 
 }
