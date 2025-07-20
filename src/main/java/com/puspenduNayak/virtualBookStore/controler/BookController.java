@@ -5,6 +5,8 @@ import com.puspenduNayak.virtualBookStore.entity.User;
 import com.puspenduNayak.virtualBookStore.service.BookService;
 import com.puspenduNayak.virtualBookStore.service.FileUploadService;
 import com.puspenduNayak.virtualBookStore.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import java.util.Optional;
 @RequestMapping("/books")
 @CrossOrigin("*")
 @Slf4j
+@Tag(name = "Books APIs", description = "Read, Update & Delete Books")
 public class BookController {
     @Autowired
     private BookService bookService;
@@ -35,12 +38,13 @@ public class BookController {
     private FileUploadService fileUploadService;
 
     @GetMapping("id/{myId}")
-    public ResponseEntity<?> getBooksById(@PathVariable ObjectId myId) {
+    public ResponseEntity<?> getBooksById(@PathVariable String myId) {
+        ObjectId objectId = new ObjectId(myId);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
         boolean flag = userService.isPresent(userName);
         if (flag) {
-            Optional<Book> book = bookService.findById(myId);
+            Optional<Book> book = bookService.findById(objectId);
             if (book.isPresent()) {
                 return new ResponseEntity<>(book, HttpStatus.OK);
             }
@@ -80,6 +84,7 @@ public class BookController {
     }
 
     @GetMapping("/all-books")
+    @Operation(summary = "Get All Books")
     public ResponseEntity<?> getAllBook() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();

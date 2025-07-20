@@ -1,7 +1,6 @@
 package com.puspenduNayak.virtualBookStore.service;
 
 import com.puspenduNayak.virtualBookStore.entity.User;
-import com.puspenduNayak.virtualBookStore.repository.BookRepository;
 import com.puspenduNayak.virtualBookStore.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,7 @@ public class UserService {
 
     @Autowired
     private EmailService emailService;
+
 
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 

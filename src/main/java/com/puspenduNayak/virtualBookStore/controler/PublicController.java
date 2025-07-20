@@ -4,6 +4,7 @@ import com.puspenduNayak.virtualBookStore.entity.User;
 import com.puspenduNayak.virtualBookStore.service.UserDetailsServiceImpl;
 import com.puspenduNayak.virtualBookStore.service.UserService;
 import com.puspenduNayak.virtualBookStore.utils.JwtUtil;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/public")
 @CrossOrigin("*")
 @Slf4j
+@Tag(name = "Public APIs", description = "Signup, Login, Logout Users & Health Check")
 public class PublicController {
 
     @Autowired

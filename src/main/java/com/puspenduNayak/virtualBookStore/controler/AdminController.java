@@ -4,6 +4,7 @@ import com.puspenduNayak.virtualBookStore.entity.Book;
 import com.puspenduNayak.virtualBookStore.entity.User;
 import com.puspenduNayak.virtualBookStore.service.BookService;
 import com.puspenduNayak.virtualBookStore.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin")
 @CrossOrigin("*")
+@Tag(name = "Admin APIs", description = "Read, Update & Delete Admin, Delete Users")
 public class AdminController {
 
     @Autowired
