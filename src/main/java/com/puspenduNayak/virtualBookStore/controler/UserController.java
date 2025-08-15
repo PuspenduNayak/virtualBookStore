@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin("*")
 @Tag(name = "User APIs", description = "Read, Update & Delete Users")
 public class UserController {
 

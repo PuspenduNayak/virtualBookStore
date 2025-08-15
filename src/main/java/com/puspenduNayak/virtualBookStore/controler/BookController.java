@@ -24,7 +24,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/books")
-@CrossOrigin("*")
 @Slf4j
 @Tag(name = "Books APIs", description = "Read, Update & Delete Books")
 public class BookController {

@@ -16,7 +16,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
-@CrossOrigin("*")
 @Tag(name = "Admin APIs", description = "Read, Update & Delete Admin, Delete Users")
 public class AdminController {
 

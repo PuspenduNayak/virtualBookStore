@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/public")
-@CrossOrigin("*")
 @Slf4j
 @Tag(name = "Public APIs", description = "Signup, Login, Logout Users & Health Check")
 public class PublicController {
